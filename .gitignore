@@ -1,0 +1,14 @@
+node_modules/
+dist/
+.next/
+.turbo/
+*.tsbuildinfo
+.env
+.env.local
+*.db
+*.sqlite
+coverage/
+.DS_Store
+*.log
+.omc/
+.pnpmrc.json
