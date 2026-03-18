@@ -15,6 +15,6 @@ export interface SearchResponse {
   total: number;
 }
 
-export async function search(workspaceId: string, query: string): Promise<SearchResponse> {
-  return apiClient.get<SearchResponse>(`/workspaces/${workspaceId}/search`, { q: query });
+export async function search(query: string, workspaceId?: string, type?: "tasks" | "projects" | "comments"): Promise<SearchResponse> {
+  return apiClient.get<SearchResponse>("/search", { q: query, workspaceId, type } as Record<string, unknown>);
 }

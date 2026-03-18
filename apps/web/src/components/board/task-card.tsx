@@ -2,8 +2,8 @@
 
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import type { Task } from "@taskforge/shared";
 import { PRIORITY_COLORS } from "@taskforge/shared";
+import type { TaskWithRelations } from "@/types";
 import { Badge } from "@taskforge/ui";
 import { Avatar, AvatarFallback } from "@taskforge/ui";
 import { Progress } from "@taskforge/ui";
@@ -12,8 +12,8 @@ import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 
 interface TaskCardProps {
-  task: Task;
-  onClick: (task: Task) => void;
+  task: TaskWithRelations;
+  onClick: (task: TaskWithRelations) => void;
 }
 
 export function TaskCard({ task, onClick }: TaskCardProps) {
@@ -33,13 +33,13 @@ export function TaskCard({ task, onClick }: TaskCardProps) {
 
   const priorityColor = PRIORITY_COLORS[task.priority as keyof typeof PRIORITY_COLORS] ?? "#94a3b8";
 
-  const subtasks = (task as any).subtasks ?? [];
-  const completedSubtasks = subtasks.filter((s: any) => s.status === "done").length;
+  const subtasks = task.subtasks ?? [];
+  const completedSubtasks = subtasks.filter((s) => s.status === "done").length;
   const totalSubtasks = subtasks.length;
   const subtaskProgress = totalSubtasks > 0 ? (completedSubtasks / totalSubtasks) * 100 : 0;
 
-  const commentCount = (task as any).comments?.length ?? 0;
-  const labels = (task as any).labels ?? [];
+  const commentCount = task.comments?.length ?? 0;
+  const labels = task.labels ?? [];
 
   return (
     <div
@@ -59,7 +59,7 @@ export function TaskCard({ task, onClick }: TaskCardProps) {
       {/* Labels */}
       {labels.length > 0 && (
         <div className="mb-2 flex flex-wrap gap-1">
-          {labels.map((label: any) => (
+          {labels.map((label) => (
             <span
               key={label.id}
               className="inline-block h-2 w-8 rounded-full"
@@ -114,10 +114,10 @@ export function TaskCard({ task, onClick }: TaskCardProps) {
         </div>
 
         {/* Assignee */}
-        {(task as any).assignee && (
+        {task.assignee && (
           <Avatar className="h-5 w-5">
             <AvatarFallback className="text-[8px]">
-              {((task as any).assignee.name ?? "?").slice(0, 2).toUpperCase()}
+              {(task.assignee.name ?? "?").slice(0, 2).toUpperCase()}
             </AvatarFallback>
           </Avatar>
         )}

@@ -22,5 +22,6 @@ export interface DashboardStats {
 }
 
 export async function getDashboardStats(workspaceId: string): Promise<DashboardStats> {
-  return apiClient.get<DashboardStats>(`/workspaces/${workspaceId}/dashboard`);
+  const res = await apiClient.get<{ dashboard: DashboardStats }>(`/workspaces/${workspaceId}/dashboard`);
+  return res.dashboard;
 }

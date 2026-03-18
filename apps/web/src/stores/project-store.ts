@@ -40,10 +40,10 @@ export const useProjectStore = create<ProjectState>((set) => ({
     }
   },
 
-  fetchProject: async (workspaceId, projectId) => {
+  fetchProject: async (_workspaceId, projectId) => {
     set({ isLoading: true, error: null });
     try {
-      const project = await getProject(workspaceId, projectId);
+      const project = await getProject(projectId);
       set({ currentProject: project, isLoading: false });
     } catch (err) {
       set({ error: err instanceof Error ? err.message : "Failed to load project", isLoading: false });
@@ -56,8 +56,8 @@ export const useProjectStore = create<ProjectState>((set) => ({
     return project;
   },
 
-  update: async (workspaceId, projectId, data) => {
-    const project = await updateProject(workspaceId, projectId, data);
+  update: async (_workspaceId, projectId, data) => {
+    const project = await updateProject(projectId, data);
     set((state) => ({
       projects: state.projects.map((p) => (p.id === projectId ? project : p)),
       currentProject: state.currentProject?.id === projectId ? project : state.currentProject,
@@ -65,8 +65,8 @@ export const useProjectStore = create<ProjectState>((set) => ({
     return project;
   },
 
-  remove: async (workspaceId, projectId) => {
-    await deleteProject(workspaceId, projectId);
+  remove: async (_workspaceId, projectId) => {
+    await deleteProject(projectId);
     set((state) => ({
       projects: state.projects.filter((p) => p.id !== projectId),
       currentProject: state.currentProject?.id === projectId ? null : state.currentProject,

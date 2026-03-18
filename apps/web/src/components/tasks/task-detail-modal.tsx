@@ -65,21 +65,21 @@ export function TaskDetailModal({ taskId, projectId, open, onOpenChange, current
   };
 
   // Comment handlers
-  const handleAddComment = async (body: string) => {
+  const handleAddComment = async (content: string) => {
     if (!taskId) return;
-    const comment = await createComment(taskId, { body });
+    const comment = await createComment(taskId, { content });
     setComments((prev) => [...prev, comment]);
   };
 
-  const handleUpdateComment = async (commentId: string, body: string) => {
+  const handleUpdateComment = async (commentId: string, content: string) => {
     if (!taskId) return;
-    await updateComment(taskId, commentId, { body });
-    setComments((prev) => prev.map((c) => (c.id === commentId ? { ...c, content: body } : c)));
+    await updateComment(commentId, { content });
+    setComments((prev) => prev.map((c) => (c.id === commentId ? { ...c, content } : c)));
   };
 
   const handleDeleteComment = async (commentId: string) => {
     if (!taskId) return;
-    await deleteComment(taskId, commentId);
+    await deleteComment(commentId);
     setComments((prev) => prev.filter((c) => c.id !== commentId));
   };
 
@@ -93,12 +93,12 @@ export function TaskDetailModal({ taskId, projectId, open, onOpenChange, current
   };
 
   const handleToggleSubtask = async (subtaskId: string, done: boolean) => {
-    await updateTask(projectId, subtaskId, { status: done ? "done" : "todo" });
+    await updateTask(subtaskId, { status: done ? "done" : "todo" });
     if (taskId) fetchTask(projectId, taskId);
   };
 
   const handleDeleteSubtask = async (subtaskId: string) => {
-    await deleteTask(projectId, subtaskId);
+    await deleteTask(subtaskId);
     if (taskId) fetchTask(projectId, taskId);
   };
 

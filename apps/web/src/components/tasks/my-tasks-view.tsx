@@ -6,6 +6,7 @@ import { Badge, Checkbox, EmptyState, Spinner } from "@taskforge/ui";
 import { CheckSquare } from "lucide-react";
 import { apiClient } from "@/lib/api-client";
 import { useWorkspaceStore } from "@/stores/workspace-store";
+import { useAuthStore } from "@/stores/auth-store";
 
 interface GroupedTasks {
   projectId: string;
@@ -17,10 +18,11 @@ export function MyTasksView() {
   const [groups, setGroups] = React.useState<GroupedTasks[]>([]);
   const [isLoading, setIsLoading] = React.useState(true);
   const activeWorkspace = useWorkspaceStore((s) => s.activeWorkspace);
+  const currentUser = useAuthStore((s) => s.user);
 
   React.useEffect(() => {
     async function fetchMyTasks() {
-      if (!activeWorkspace) return;
+      if (!activeWorkspace || !currentUser) return;
       setIsLoading(true);
       try {
         // Fetch projects first, then tasks for each
@@ -34,7 +36,7 @@ export function MyTasksView() {
           try {
             const tasksData = await apiClient.get<any>(
               `/projects/${project.id}/tasks`,
-              { assignee: "me", perPage: 50 }
+              { assigneeId: currentUser.id, perPage: 50 }
             );
             const tasks = tasksData?.tasks ?? [];
             if (tasks.length > 0) {
@@ -57,7 +59,7 @@ export function MyTasksView() {
     }
 
     fetchMyTasks();
-  }, [activeWorkspace]);
+  }, [activeWorkspace, currentUser]);
 
   if (isLoading) {
     return <Spinner className="py-12" />;

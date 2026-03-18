@@ -1,6 +1,6 @@
 "use client";
 
-import type { Task } from "@taskforge/shared";
+import type { TaskWithRelations } from "@/types";
 import { TASK_STATUS_LABELS, TASK_PRIORITY_LABELS, PRIORITY_COLORS, STATUS_COLORS } from "@taskforge/shared";
 import { Badge } from "@taskforge/ui";
 import { Checkbox } from "@taskforge/ui";
@@ -9,10 +9,10 @@ import { Calendar } from "lucide-react";
 import { format } from "date-fns";
 
 interface TaskRowProps {
-  task: Task;
+  task: TaskWithRelations;
   selected: boolean;
   onSelect: (id: string, selected: boolean) => void;
-  onClick: (task: Task) => void;
+  onClick: (task: TaskWithRelations) => void;
 }
 
 export function TaskRow({ task, selected, onSelect, onClick }: TaskRowProps) {
@@ -20,8 +20,8 @@ export function TaskRow({ task, selected, onSelect, onClick }: TaskRowProps) {
   const statusColor = STATUS_COLORS[task.status as keyof typeof STATUS_COLORS] ?? "#94a3b8";
   const priorityLabel = TASK_PRIORITY_LABELS[task.priority as keyof typeof TASK_PRIORITY_LABELS] ?? task.priority;
   const priorityColor = PRIORITY_COLORS[task.priority as keyof typeof PRIORITY_COLORS] ?? "#94a3b8";
-  const assignee = (task as any).assignee;
-  const labels = (task as any).labels ?? [];
+  const assignee = task.assignee;
+  const labels = task.labels ?? [];
 
   return (
     <tr

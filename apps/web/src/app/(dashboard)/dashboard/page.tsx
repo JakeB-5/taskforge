@@ -8,12 +8,17 @@ import { PriorityChart } from "@/components/dashboard/priority-chart";
 import { RecentActivity } from "@/components/dashboard/recent-activity";
 import { UpcomingDeadlines } from "@/components/dashboard/upcoming-deadlines";
 import { MyTasksSummary } from "@/components/dashboard/my-tasks-summary";
+import { useAuthStore } from "@/stores/auth-store";
+import { useWorkspaceStore } from "@/stores/workspace-store";
+import { apiClient } from "@/lib/api-client";
 import type { Task } from "@taskforge/shared";
 
 export default function DashboardPage() {
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [loading, setLoading] = useState(true);
-  const [myTasks] = useState<Task[]>([]);
+  const [myTasks, setMyTasks] = useState<Task[]>([]);
+  const user = useAuthStore((s) => s.user);
+  const activeWorkspace = useWorkspaceStore((s) => s.activeWorkspace);
 
   useEffect(() => {
     const workspaceId = localStorage.getItem("activeWorkspaceId");
@@ -26,6 +31,26 @@ export default function DashboardPage() {
       setLoading(false);
     }
   }, []);
+
+  useEffect(() => {
+    if (!user || !activeWorkspace) return;
+    // Fetch projects then tasks assigned to current user across all projects
+    apiClient
+      .get<any>(`/workspaces/${activeWorkspace.id}/projects`)
+      .then(async (data) => {
+        const projects = data?.projects ?? [];
+        const taskArrays = await Promise.all(
+          projects.map((p: any) =>
+            apiClient
+              .get<any>(`/projects/${p.id}/tasks`, { assigneeId: user.id, perPage: 50 })
+              .then((res) => res?.tasks ?? [])
+              .catch(() => [])
+          )
+        );
+        setMyTasks(taskArrays.flat());
+      })
+      .catch(() => {});
+  }, [user, activeWorkspace]);
 
   return (
     <div className="space-y-6">

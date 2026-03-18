@@ -1,20 +1,22 @@
 import type { Notification } from "@taskforge/shared";
 import { apiClient } from "../api-client";
 
-export async function getNotifications(): Promise<Notification[]> {
-  return apiClient.get<Notification[]>("/notifications");
+export interface NotificationsResponse {
+  notifications: Notification[];
+  total: number;
+  unreadCount: number;
 }
 
-export async function getUnreadCount(): Promise<{ count: number }> {
-  return apiClient.get<{ count: number }>("/notifications/unread-count");
+export async function getNotifications(): Promise<NotificationsResponse> {
+  return apiClient.get<NotificationsResponse>("/notifications");
 }
 
-export async function markAsRead(notificationId: string): Promise<Notification> {
-  return apiClient.post<Notification>(`/notifications/${notificationId}/read`);
+export async function markAsRead(notificationId: string): Promise<void> {
+  return apiClient.patch(`/notifications/${notificationId}/read`);
 }
 
 export async function markAllAsRead(): Promise<void> {
-  return apiClient.post("/notifications/read-all");
+  return apiClient.patch("/notifications/read-all");
 }
 
 export async function deleteNotification(notificationId: string): Promise<void> {

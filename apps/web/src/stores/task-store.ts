@@ -73,9 +73,9 @@ export const useTaskStore = create<TaskState>((set, get) => ({
     }
   },
 
-  fetchTask: async (projectId, taskId) => {
+  fetchTask: async (_projectId, taskId) => {
     try {
-      const task = await getTask(projectId, taskId);
+      const task = await getTask(taskId);
       set({ currentTask: task });
     } catch (err) {
       set({ error: err instanceof Error ? err.message : "Failed to load task" });
@@ -91,8 +91,8 @@ export const useTaskStore = create<TaskState>((set, get) => ({
     return task;
   },
 
-  update: async (projectId, taskId, data) => {
-    const task = await updateTask(projectId, taskId, data);
+  update: async (_projectId, taskId, data) => {
+    const task = await updateTask(taskId, data);
     set((state) => {
       const tasks = state.tasks.map((t) => (t.id === taskId ? task : t));
       return {
@@ -107,15 +107,15 @@ export const useTaskStore = create<TaskState>((set, get) => ({
   move: async (projectId, taskId, data) => {
     // Optimistic update already applied
     try {
-      await moveTask(projectId, taskId, data);
+      await moveTask(taskId, data);
     } catch {
       // Revert on failure by refetching
       get().fetchTasks(projectId);
     }
   },
 
-  remove: async (projectId, taskId) => {
-    await deleteTask(projectId, taskId);
+  remove: async (_projectId, taskId) => {
+    await deleteTask(taskId);
     set((state) => {
       const tasks = state.tasks.filter((t) => t.id !== taskId);
       return {

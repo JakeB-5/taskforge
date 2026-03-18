@@ -23,7 +23,7 @@ export function getConfig(): AppConfig {
     jwtSecret: required("JWT_SECRET"),
     jwtExpiresIn: process.env.JWT_EXPIRES_IN ?? "7d",
     bcryptRounds: parseInt(process.env.BCRYPT_ROUNDS ?? "10", 10),
-    corsOrigin: process.env.CORS_ORIGIN ?? "http://localhost:5173",
+    corsOrigin: process.env.CORS_ORIGIN ?? "http://localhost:3000",
     nodeEnv: process.env.NODE_ENV ?? "development",
   };
 }

@@ -265,12 +265,12 @@ describe("filterTasksSchema", () => {
 
 describe("createCommentSchema", () => {
   it("accepts valid comment", () => {
-    const result = createCommentSchema.safeParse({ body: "This is a comment" });
+    const result = createCommentSchema.safeParse({ content: "This is a comment" });
     expect(result.success).toBe(true);
   });
 
-  it("rejects empty body", () => {
-    const result = createCommentSchema.safeParse({ body: "" });
+  it("rejects empty content", () => {
+    const result = createCommentSchema.safeParse({ content: "" });
     expect(result.success).toBe(false);
   });
 });

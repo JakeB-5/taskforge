@@ -1,6 +1,6 @@
 "use client";
 
-import type { Task } from "@taskforge/shared";
+import type { TaskWithRelations } from "@/types";
 import { TASK_STATUSES, TASK_STATUS_LABELS, TASK_PRIORITIES, TASK_PRIORITY_LABELS, TASK_TYPES, TASK_TYPE_LABELS } from "@taskforge/shared";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@taskforge/ui";
 import { Input } from "@taskforge/ui";
@@ -8,7 +8,7 @@ import { Label } from "@taskforge/ui";
 import { Separator } from "@taskforge/ui";
 
 interface TaskPropertiesProps {
-  task: Task;
+  task: TaskWithRelations;
   onUpdate: (data: Record<string, any>) => void;
 }
 
@@ -82,17 +82,17 @@ export function TaskProperties({ task, onUpdate }: TaskPropertiesProps) {
           className="mt-1"
           min={0}
           step={0.5}
-          value={(task as any).estimatedHours ?? ""}
+          value={task.estimatedHours ?? ""}
           onChange={(e) => onUpdate({ estimatedHours: e.target.value ? Number(e.target.value) : null })}
         />
       </div>
 
       {/* Labels display */}
-      {(task as any).labels?.length > 0 && (
+      {(task.labels?.length ?? 0) > 0 && (
         <div>
           <Label className="text-xs text-muted-foreground">Labels</Label>
           <div className="mt-1 flex flex-wrap gap-1">
-            {(task as any).labels.map((label: any) => (
+            {task.labels!.map((label: any) => (
               <span
                 key={label.id}
                 className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs text-white"

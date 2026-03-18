@@ -3,19 +3,23 @@ import type { CreateWorkspaceInput, UpdateWorkspaceInput, InviteMemberInput, Upd
 import { apiClient } from "../api-client";
 
 export async function getWorkspaces(): Promise<Workspace[]> {
-  return apiClient.get<Workspace[]>("/workspaces");
+  const res = await apiClient.get<{ workspaces: Workspace[] }>("/workspaces");
+  return res.workspaces;
 }
 
 export async function getWorkspace(id: string): Promise<Workspace> {
-  return apiClient.get<Workspace>(`/workspaces/${id}`);
+  const res = await apiClient.get<{ workspace: Workspace }>(`/workspaces/${id}`);
+  return res.workspace;
 }
 
 export async function createWorkspace(data: CreateWorkspaceInput): Promise<Workspace> {
-  return apiClient.post<Workspace>("/workspaces", data);
+  const res = await apiClient.post<{ workspace: Workspace }>("/workspaces", data);
+  return res.workspace;
 }
 
 export async function updateWorkspace(id: string, data: UpdateWorkspaceInput): Promise<Workspace> {
-  return apiClient.patch<Workspace>(`/workspaces/${id}`, data);
+  const res = await apiClient.patch<{ workspace: Workspace }>(`/workspaces/${id}`, data);
+  return res.workspace;
 }
 
 export async function deleteWorkspace(id: string): Promise<void> {
@@ -23,15 +27,18 @@ export async function deleteWorkspace(id: string): Promise<void> {
 }
 
 export async function getWorkspaceMembers(workspaceId: string): Promise<WorkspaceMember[]> {
-  return apiClient.get<WorkspaceMember[]>(`/workspaces/${workspaceId}/members`);
+  const res = await apiClient.get<{ members: WorkspaceMember[] }>(`/workspaces/${workspaceId}/members`);
+  return res.members;
 }
 
-export async function inviteMember(workspaceId: string, data: InviteMemberInput): Promise<WorkspaceMember> {
-  return apiClient.post<WorkspaceMember>(`/workspaces/${workspaceId}/members`, data);
+export async function inviteMember(workspaceId: string, data: InviteMemberInput): Promise<WorkspaceMember[]> {
+  const res = await apiClient.post<{ members: WorkspaceMember[] }>(`/workspaces/${workspaceId}/members`, data);
+  return res.members;
 }
 
 export async function updateMemberRole(workspaceId: string, memberId: string, data: UpdateMemberRoleInput): Promise<WorkspaceMember> {
-  return apiClient.patch<WorkspaceMember>(`/workspaces/${workspaceId}/members/${memberId}`, data);
+  const res = await apiClient.patch<{ member: WorkspaceMember }>(`/workspaces/${workspaceId}/members/${memberId}`, data);
+  return res.member;
 }
 
 export async function removeMember(workspaceId: string, memberId: string): Promise<void> {

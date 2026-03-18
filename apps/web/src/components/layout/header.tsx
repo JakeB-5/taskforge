@@ -15,7 +15,7 @@ import {
   DropdownMenuTrigger,
 } from "@taskforge/ui";
 import { useAuthStore } from "@/stores/auth-store";
-import { getUnreadCount } from "@/lib/api/notifications";
+import { getNotifications } from "@/lib/api/notifications";
 
 interface HeaderProps {
   onMenuToggle: () => void;
@@ -28,8 +28,8 @@ export function Header({ onMenuToggle }: HeaderProps) {
   const [unreadCount, setUnreadCount] = useState(0);
 
   useEffect(() => {
-    getUnreadCount()
-      .then((data) => setUnreadCount(data.count))
+    getNotifications()
+      .then((data) => setUnreadCount(data.unreadCount))
       .catch(() => {});
   }, []);
 
